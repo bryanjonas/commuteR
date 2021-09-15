@@ -2,6 +2,8 @@
 
 A project I built to attempt to discover the perfect time to leave for work and leave for home. An endevour slightly complicated by having two work locations.
 
+Idea credit to Dusty Turner: https://github.com/dusty-turner/pcs_drive_time_tracker
+
 The project is built in two parts:
 
 #### collectData
