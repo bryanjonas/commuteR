@@ -1,0 +1,10 @@
+version: '3.5'
+services:
+  commuteR-collect:
+    image: collect-data:latest
+#    ports:
+#     - 8787:8787
+    env_file:
+     - .env
+    volumes:
+     - "/home/bryan/commuteR:/home/rstudio/commuteR"

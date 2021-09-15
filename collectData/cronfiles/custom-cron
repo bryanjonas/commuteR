@@ -1,0 +1,7 @@
+SHELL=/bin/bash
+BASH_ENV=/container.env
+
+*/5 7-10 * * 1-5 /home/rstudio/commuteR/collectData/cronfiles/cronscript_morn.sh > /home/rstudio/commuteR/cron.log 2>&1
+
+*/5 15-18 * * 1-5 /home/rstudio/commuteR/collectData/cronfiles/cronscript_after.sh > /home/rstudio/commuteR/cron.log 2>&1
+
