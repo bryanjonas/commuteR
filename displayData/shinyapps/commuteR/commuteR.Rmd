@@ -28,7 +28,7 @@ work_1_morn %<>%
          date = lubridate::as_date(dtg_rnd),
          min = sec/60,
          dow = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
-    "Friday", "Saturday")[as.POSIXlt(date)$wday + 1])
+        "Friday", "Saturday")[as.POSIXlt(date)$wday + 1])
 
 work_2_morn %<>%
   mutate(dtg_conv = lubridate::with_tz(as_datetime(dtg), tzone = "America/Monterrey"),
