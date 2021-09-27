@@ -1,0 +1,212 @@
+---
+title: "commuteR"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(lubridate)
+library(hms)
+library(magrittr)
+library(plotly)
+library(shiny)
+
+work_1_morn = read_csv('/data/work_1_morn.csv', col_names = c('dtg','sec'))
+work_2_morn = read_csv('/data/work_2_morn.csv', col_names = c('dtg','sec'))
+work_1_after = read_csv('/data/work_1_after.csv', col_names = c('dtg','sec'))
+work_2_after = read_csv('/data/work_2_after.csv', col_names = c('dtg','sec'))
+
+work_1_morn %<>%
+  mutate(dtg_conv = lubridate::with_tz(as_datetime(dtg), tzone = "America/Monterrey"),
+         dtg_rnd = lubridate::round_date(dtg_conv, unit = "5 mins"),
+         time = hms::as_hms(dtg_rnd),
+         date = lubridate::as_date(dtg_rnd),
+         min = sec/60,
+         dow = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+        "Friday", "Saturday")[as.POSIXlt(date)$wday + 1])
+
+work_2_morn %<>%
+  mutate(dtg_conv = lubridate::with_tz(as_datetime(dtg), tzone = "America/Monterrey"),
+         dtg_rnd = lubridate::round_date(dtg_conv, unit = "5 mins"),
+         time = hms::as_hms(dtg_rnd),
+         date = lubridate::as_date(dtg_rnd),
+         min = sec/60,
+         dow = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+    "Friday", "Saturday")[as.POSIXlt(date)$wday + 1])
+
+work_1_after %<>%
+  mutate(dtg_conv = lubridate::with_tz(as_datetime(dtg), tzone = "America/Monterrey"),
+         dtg_rnd = lubridate::round_date(dtg_conv, unit = "5 mins"),
+         time = hms::as_hms(dtg_rnd),
+         date = lubridate::as_date(dtg_rnd),
+         min = sec/60,
+         dow = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+    "Friday", "Saturday")[as.POSIXlt(date)$wday + 1])
+work_2_after %<>%
+  mutate(dtg_conv = lubridate::with_tz(as_datetime(dtg), tzone = "America/Monterrey"),
+         dtg_rnd = lubridate::round_date(dtg_conv, unit = "5 mins"),
+         time = hms::as_hms(dtg_rnd),
+         date = lubridate::as_date(dtg_rnd),
+         min = sec/60,
+         dow = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+    "Friday", "Saturday")[as.POSIXlt(date)$wday + 1])
+
+work_2_after %>%
+    filter(dow %in% c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+    "Friday", "Saturday")) %>%
+    group_by(time) %>%
+    arrange(time) %>%
+    mutate(avg_min = round(mean(min),2))
+```
+
+Columns {.sidebar data-width=200}
+-----------------------------------------------------------------------
+
+```{r}
+
+selectInput("day_of_week", label = "Day of Week:", choices = c('Work Week',
+                                                                        'Monday',
+                                                                        'Tuesday',
+                                                                        'Wednesday',
+                                                                        'Thursday',
+                                                                        'Friday'))
+
+
+
+```
+
+Column {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Round Rock
+
+#### To Work
+```{r}
+renderPlotly({
+  work_2_morn %>%
+    mutate(dow_select = as.character(input$day_of_week), name = "dow_select") %>%
+    mutate(dow_select = ifelse(dow_select == "Work Week", 
+                               c("Monday", 
+                                 "Tuesday", 
+                                 "Wednesday", 
+                                 "Thursday", 
+                                 "Friday"), 
+                               dow_select)) %>%
+    filter(dow %in% dow_select) %>%
+    group_by(time) %>%
+    arrange(time) %>%
+    mutate(avg_min = round(mean(min),2)) %>%
+    plot_ly(x = ~time, 
+            y = ~avg_min, 
+            type = "scatter", 
+            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+            color = ~avg_min,
+            marker = list(colorscale = "Bluered")
+    ) %>%
+    hide_colorbar() %>%
+    layout(showLegend = FALSE, 
+           showScale = FALSE,
+           xaxis = list(title = ""),
+           yaxis = list(title = "Average Commute Time"))
+})
+```
+
+#### To Home
+```{r}
+renderPlotly({
+  work_2_after %>%
+    mutate(dow_select = as.character(input$day_of_week), name = "dow_select") %>%
+    mutate(dow_select = ifelse(dow_select == "Work Week", 
+                               c("Monday", 
+                                 "Tuesday", 
+                                 "Wednesday", 
+                                 "Thursday", 
+                                 "Friday"), 
+                               dow_select)) %>%
+    filter(dow %in% dow_select) %>%
+    group_by(time) %>%
+    arrange(time) %>%
+    mutate(avg_min = round(mean(min),2)) %>%    
+    plot_ly(x = ~time, 
+            y = ~avg_min, 
+            type = "scatter", 
+            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+            color = ~avg_min,
+            marker = list(colorscale = "Bluered")
+    ) %>%    
+    hide_colorbar() %>%
+    layout(showLegend = FALSE, 
+           showScale = FALSE,
+           xaxis = list(title = ""),
+           yaxis = list(title = "Average Commute Time"))
+})
+```
+
+### Downtown
+
+#### To Work
+```{r}
+renderPlotly({
+  work_1_morn %>%
+    mutate(dow_select = as.character(input$day_of_week), name = "dow_select") %>%
+    mutate(dow_select = ifelse(dow_select == "Work Week", 
+                               c("Monday", 
+                                 "Tuesday", 
+                                 "Wednesday", 
+                                 "Thursday", 
+                                 "Friday"), 
+                               dow_select)) %>%
+    filter(dow %in% dow_select) %>%
+    group_by(time) %>%
+    arrange(time) %>%
+    mutate(avg_min = round(mean(min),2)) %>%
+    plot_ly(x = ~time, 
+            y = ~avg_min, 
+            type = "scatter", 
+            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+            color = ~avg_min,
+            marker = list(colorscale = "Bluered")
+    ) %>%
+    hide_colorbar() %>%
+    layout(showLegend = FALSE, 
+           showScale = FALSE,
+           xaxis = list(title = ""),
+           yaxis = list(title = "Average Commute Time"))
+})
+```
+
+#### To Home
+```{r}
+renderPlotly({
+  work_1_after %>%
+    mutate(dow_select = as.character(input$day_of_week), name = "dow_select") %>%
+    mutate(dow_select = ifelse(dow_select == "Work Week", 
+                               c("Monday", 
+                                 "Tuesday", 
+                                 "Wednesday", 
+                                 "Thursday", 
+                                 "Friday"), 
+                               dow_select)) %>%
+    filter(dow %in% dow_select) %>%
+    group_by(time) %>%
+    arrange(time) %>%
+    mutate(avg_min = round(mean(min),2)) %>%
+    plot_ly(x = ~time, 
+            y = ~avg_min, 
+            type = "scatter", 
+            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+            color = ~avg_min,
+            marker = list(colorscale = "Bluered")
+    ) %>%
+    hide_colorbar() %>%
+    layout(showLegend = FALSE, 
+           showScale = FALSE,
+           xaxis = list(title = ""),
+           yaxis = list(title = "Average Commute Time"))
+})
+```

@@ -1,0 +1,28 @@
+version: '3.5'
+services:
+  collect:
+    build: 
+      context: .
+      dockerfile: docker/collect/Dockerfile
+    restart: always
+#    ports:
+#     - 8787:8787
+    env_file:
+     - collect.env
+    volumes:
+     - "./cronfiles:/cronfiles"
+     - "./data:/data"
+     - "./scripts:/scripts"
+
+  display:
+    build: 
+      context: .
+      dockerfile: docker/display/Dockerfile
+    restart: always
+    volumes:
+      - "./shinyapps/:/shinyapps/"
+      - "./data:/data"
+    env_file:
+     - display.env
+    ports:
+     - 3838:3838
