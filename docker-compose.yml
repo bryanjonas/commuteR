@@ -20,7 +20,7 @@ services:
       dockerfile: docker/display/Dockerfile
     restart: always
     volumes:
-      - "./shinyapps/:/shinyapps/"
+      - "./shinyapps:/shinyapps"
       - "./data:/data"
     env_file:
      - display.env

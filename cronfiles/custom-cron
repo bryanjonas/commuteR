@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 BASH_ENV=/container.env
 
-*/5 7-10 * * 1-5 /cronfiles/cronscript_morn.sh > /cronfiles/cron.log 2>&1
+*/5 6-10 * * 1-5 /cronfiles/cronscript_morn.sh > /cronfiles/cron.log 2>&1
 
-*/5 15-18 * * 1-5 /cronfiles/cronscript_after.sh > /cronfiles/cron.log 2>&1
+*/5 14-18 * * 1-5 /cronfiles/cronscript_after.sh > /cronfiles/cron.log 2>&1
 
