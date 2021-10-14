@@ -62,9 +62,17 @@ work_2_after %>%
     group_by(time) %>%
     arrange(time) %>%
     mutate(avg_min = round(mean(min),2))
+
+last_update <- (work_1_morn %>%
+  rbind(work_1_after) %>%
+  rbind(work_2_morn) %>%
+  rbind(work_2_after) %>%
+  select(dtg_conv) %>%
+  arrange(dtg_conv) %>%
+  tail(1))[[1]]
 ```
 
-Columns {.sidebar data-width=200}
+Columns {.sidebar data-width=300}
 -----------------------------------------------------------------------
 
 ```{r}
@@ -75,9 +83,10 @@ selectInput("day_of_week", label = "Day of Week:", choices = c('Work Week',
                                                                         'Wednesday',
                                                                         'Thursday',
                                                                         'Friday'))
-
-
-
+```
+Last Update:
+```{r}
+last_update
 ```
 
 Column {.tabset .tabset-fade}
@@ -101,14 +110,19 @@ renderPlotly({
     group_by(time) %>%
     arrange(time) %>%
     mutate(avg_min = round(mean(min),2)) %>%
+    ungroup() %>%
     plot_ly(x = ~time, 
-            y = ~avg_min, 
-            type = "scatter", 
-            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
-            color = ~avg_min,
+            y = ~min, 
+            type = 'box',
             marker = list(colorscale = "Bluered")
-    ) %>%
+            ) %>%
+    add_trace(y = ~avg_min,
+              type = 'scatter',
+              text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+              color = ~avg_min
+              ) %>%
     hide_colorbar() %>%
+    layout(showlegend = FALSE)%>%
     layout(showLegend = FALSE, 
            showScale = FALSE,
            xaxis = list(title = ""),
@@ -131,15 +145,20 @@ renderPlotly({
     filter(dow %in% dow_select) %>%
     group_by(time) %>%
     arrange(time) %>%
-    mutate(avg_min = round(mean(min),2)) %>%    
+    mutate(avg_min = round(mean(min),2)) %>%
+    ungroup() %>%
     plot_ly(x = ~time, 
-            y = ~avg_min, 
-            type = "scatter", 
-            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
-            color = ~avg_min,
+            y = ~min, 
+            type = 'box',
             marker = list(colorscale = "Bluered")
-    ) %>%    
+            ) %>%
+    add_trace(y = ~avg_min,
+              type = 'scatter',
+              text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+              color = ~avg_min
+              ) %>%
     hide_colorbar() %>%
+    layout(showlegend = FALSE)%>%
     layout(showLegend = FALSE, 
            showScale = FALSE,
            xaxis = list(title = ""),
@@ -165,14 +184,19 @@ renderPlotly({
     group_by(time) %>%
     arrange(time) %>%
     mutate(avg_min = round(mean(min),2)) %>%
+    ungroup() %>%
     plot_ly(x = ~time, 
-            y = ~avg_min, 
-            type = "scatter", 
-            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
-            color = ~avg_min,
+            y = ~min, 
+            type = 'box',
             marker = list(colorscale = "Bluered")
-    ) %>%
+            ) %>%
+    add_trace(y = ~avg_min,
+              type = 'scatter',
+              text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+              color = ~avg_min
+              ) %>%
     hide_colorbar() %>%
+    layout(showlegend = FALSE)%>%
     layout(showLegend = FALSE, 
            showScale = FALSE,
            xaxis = list(title = ""),
@@ -196,13 +220,18 @@ renderPlotly({
     group_by(time) %>%
     arrange(time) %>%
     mutate(avg_min = round(mean(min),2)) %>%
+    ungroup() %>%
     plot_ly(x = ~time, 
-            y = ~avg_min, 
-            type = "scatter", 
-            text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
-            color = ~avg_min,
+            y = ~min, 
+            type = 'box',
             marker = list(colorscale = "Bluered")
-    ) %>%
+            ) %>%
+    add_trace(y = ~avg_min,
+              type = 'scatter',
+              text = ~paste("Time: ", time, '<br>Avg Time:', avg_min),
+              color = ~avg_min
+              ) %>%
+    layout(showlegend = FALSE)%>%
     hide_colorbar() %>%
     layout(showLegend = FALSE, 
            showScale = FALSE,

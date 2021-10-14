@@ -1,9 +1,0 @@
-shiny:
-  image: shiny-local:latest
-  volumes:
-    - "./shinyapps/:/shinyapps/"
-    - "/home/bryan/commuteR:/home/rstudio/commuteR"
-  env_file:
-   - .env
-  ports:
-   - 3838:3838
